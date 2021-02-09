@@ -7,7 +7,7 @@ const generateP2SHAddress = (publicKey) => {
     const scriptHex = CryptoJS.enc.Hex.parse(script);
     const scriptRipeHash = '05'+CryptoJS.RIPEMD160(CryptoJS.SHA256(scriptHex)).toString();
 
-    const doubleHashedKey = CryptoJS.SHA256(CryptoJS.SHA256(scriptRipeHash)).toString();
+    const doubleHashedKey = CryptoJS.SHA256(CryptoJS.SHA256(CryptoJS.enc.Hex.parse(scriptRipeHash))).toString();
     const checkSum = doubleHashedKey.substr(0, 8);
 
     const binaryAddress = scriptRipeHash+checkSum;
