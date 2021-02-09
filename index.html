@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+    <title>Bitcoin Addresses from Mnemonic Code</title>
+    <style>
+        body {
+            font-family:Georgia, 'Times New Roman', Times, serif;
+            text-align: center;
+        }
+        .seed {
+            width: 300px;
+        }
+        #display {
+            font-family: 'Times New Roman', Times, serif;
+        }
+    </style>
+</head>
+<body>
+    <h1>Deriving Bitcoin Address from Seed Phrase (Mnemonic Seed)</h1>  
+    <p><button id="generate_random">Generate Random Seed</button></p>
+    <h2>OR</h2>
+    Enter your Seed: 
+    <form id="import">
+        <input class="seed"><input type="submit" value="generate addresses">
+    </form>
+    <div id="display"></div>
+    <script src="bs58.js"></script>
+    <script src="ecc.js"></script>
+    <script src="p2pkh.js"></script>
+    <script src="p2sh.js"></script>
+    <script src="words.js"></script>
+    <script src="mnemonic.js"></script>
+    <script src="address.js"></script>
+
+    <script>
+        let mnemonic;
+
+        document.getElementById('generate_random').addEventListener('click', () => {
+            mnemonic = getMnemonic();
+            prepareDisplay();
+        });
+
+        document.getElementById('import').addEventListener('submit', e => {
+            e.preventDefault();
+            mnemonic = document.querySelector('.seed').value;
+            prepareDisplay();
+        });
+
+        function prepareDisplay() {
+            const {masterPrivateKey,masterPublicKey,legacyPrivateKeys,
+            legacyAddresses,p2shAddresses,p2shPrivateKeys} = detailsFromMnemonic(mnemonic);
+
+            let html = `
+                <p>Mnemonic Code (Seed Phrase): ${mnemonic}<br></p>
+                <p>Master Private Key: ${masterPrivateKey}<br></p>
+                <p>Master Public Key: ${masterPublicKey}<br></p>
+            `;
+
+            html += `<p>Legacy Addresses (first 10)<br>`;
+            legacyAddresses.forEach((address,index) => {
+                html += `${index+1}. ${address} - Private Key: ${legacyPrivateKeys[index]}<br>`;
+            });
+
+            html += `</p>`;
+
+            html += `<p>P2SH Addresses (first 10)<br>`;
+            p2shAddresses.forEach((address,index) => {
+                html += `${index+1}. ${address} - Private Key: ${p2shPrivateKeys[index]}<br>`;
+            });
+
+            html += `</p>`;
+            document.getElementById('display').innerHTML = html;
+        }
+    </script>
+</body>
+</html>
