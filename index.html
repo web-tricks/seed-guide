@@ -32,6 +32,7 @@
     <script src="ecc.js"></script>
     <script src="p2pkh.js"></script>
     <script src="p2sh.js"></script>
+    <script src="bech32.js"></script>
     <script src="words.js"></script>
     <script src="mnemonic.js"></script>
     <script src="address.js"></script>
@@ -52,7 +53,8 @@
 
         function prepareDisplay() {
             const {masterPrivateKey,masterPublicKey,legacyPrivateKeys,
-            legacyAddresses,p2shAddresses,p2shPrivateKeys} = detailsFromMnemonic(mnemonic);
+            legacyAddresses,p2shAddresses,p2shPrivateKeys,bech32Addresses,
+            bech32PrivateKeys} = detailsFromMnemonic(mnemonic);
 
             let html = `
                 <p>Mnemonic Code (Seed Phrase): ${mnemonic}<br></p>
@@ -73,6 +75,14 @@
             });
 
             html += `</p>`;
+
+            html += `<p>Bech32 Addresses (first 10)<br>`;
+            bech32Addresses.forEach((address,index) => {
+                html += `${index+1}. ${address} - Private Key: ${bech32PrivateKeys[index]}<br>`;
+            });
+
+            html += `</p>`;
+
             document.getElementById('display').innerHTML = html;
         }
     </script>
